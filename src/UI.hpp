@@ -3,12 +3,12 @@
 
 #include <string>
 
-namespace it {
+namespace pl {
 struct Settings
 {
   std::string level;     // easy medium hard
   std::string character; // icy-charcacter1 icy-charcacter2
 };
-} // namespace it
+} // namespace pl
 
 #endif

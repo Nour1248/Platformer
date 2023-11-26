@@ -6,7 +6,7 @@
 #include <utility>
 #include <vector>
 
-namespace it {
+namespace pl {
 class App
 {
 private:
@@ -35,6 +35,6 @@ public:
   int mainLoop() noexcept;
 };
 
-} // namespace it
+} // namespace pl
 
 #endif // APP_HPP_

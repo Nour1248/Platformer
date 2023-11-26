@@ -2,7 +2,7 @@
 #include <SDL3/SDL_image.h>
 #include <iostream>
 
-namespace it {
+namespace pl {
 App::App(std::pair<int32_t, int32_t> dimensions, std::string name) noexcept
 {
   initSDL();
@@ -108,6 +108,6 @@ break;
   return 0;
 }
 
-} // namespace it
+} // namespace pl
 
 //  for benchmarking

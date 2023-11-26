@@ -4,24 +4,24 @@
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_image.h>
 
-namespace it {
-class Mezo
+namespace pl {
+class MainChar
 {
 private:
   SDL_Texture* texture;
 
 private:
-  Mezo(/* args */) noexcept;
+  MainChar(/* args */) noexcept;
 
 public:
-  Mezo(Mezo const&) = delete;
-  Mezo& operator=(Mezo const&) = delete;
-  ~Mezo() noexcept;
+  MainChar(MainChar const&) = delete;
+  MainChar& operator=(MainChar const&) = delete;
+  ~MainChar() noexcept;
 
-  static Mezo getSingleton() noexcept;
+  static MainChar getSingleton() noexcept;
   void jump() noexcept;
   void rotate() noexcept;
   void handleEvents() noexcept;
 };
-} // namespace it
+} // namespace pl
 #endif
