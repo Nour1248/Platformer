@@ -1,17 +1,15 @@
 #ifndef MEZO_HPP_
 #define MEZO_HPP_
 
+#include "Entity.h"
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_image.h>
 
 namespace pl {
-class MainChar
+class MainChar final : virtual public Entity
 {
 private:
-  SDL_Texture* texture;
-
-private:
-  MainChar(/* args */) noexcept;
+  MainChar() noexcept;
 
 public:
   MainChar(MainChar const&) = delete;
@@ -19,9 +17,6 @@ public:
   ~MainChar() noexcept;
 
   static MainChar getSingleton() noexcept;
-  void jump() noexcept;
-  void rotate() noexcept;
-  void handleEvents() noexcept;
 };
 } // namespace pl
 #endif

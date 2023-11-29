@@ -36,7 +36,6 @@
 #ifndef SDL_test_h_arness_h
 #define SDL_test_h_arness_h
 
-#include "SDL3/SDL_stdinc.h"
 #include <SDL3/SDL_begin_code.h>
 /* Set up for C function definitions, even when using C++ */
 #ifdef __cplusplus

@@ -1,9 +1,9 @@
-#include <Game.hpp>
-#include <SDL3/SDL.h>
+#include "Game.h"
+
+using pl::App;
 
 int
 main(int argc, char** argv)
 {
-  pl::App game{ std::pair<int32_t, int32_t>(600, 600), "Ice Tower" };
-  return game.mainLoop();
+  return App.run(argc, argv);
 }
