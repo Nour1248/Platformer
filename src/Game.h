@@ -1,5 +1,5 @@
 #ifndef APP_HPP_
-#define APP_HPP_
+#define APP_HPP_ 69
 
 #include "utils.h"
 #include <SDL3/SDL.h>
@@ -10,15 +10,17 @@ class _App final
 {
 public:
   _App() noexcept;
-  ~_App() noexcept;
   _App(_App const&) = delete;
   _App& operator=(_App const&) = delete;
+  ~_App() noexcept;
 
   SDL_Renderer* getmRenderer() noexcept;
   SDL_Window* getmWindow() noexcept;
   const SDL_Event getmEvent() noexcept;
 
-  void handleCmd(int argc, char** argv) noexcept;
+  using argVector = vector<string>;
+  argVector getOptions(int argc, char** argv) noexcept;
+  void handleCmd(argVector av) noexcept;
 
   inline void initSDL() noexcept;
   inline void initWindow(pair<int, int> dimensions) noexcept;
@@ -27,7 +29,7 @@ public:
   inline void clearWindow() noexcept;
   inline void renderScene() noexcept;
 
-  int run(int argc, char** argv) noexcept;
+  int run(int& argc, char** argv) noexcept;
 
 private:
   SDL_Window* m_window;

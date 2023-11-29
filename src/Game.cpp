@@ -1,8 +1,12 @@
 #include "Game.h"
 #include "utils.h"
+#include <SDL3/SDL.h>
 #include <SDL3/SDL_image.h>
 
 namespace pl {
+
+_App App;
+
 _App::_App() noexcept
   : m_windowShouldOpen(true)
   , m_icon(IMG_Load("../assets/Icon.png"))
@@ -90,8 +94,18 @@ _App::handleEvents() noexcept
   }
 }
 
+_App::argVector
+_App::getOptions(int argc, char** argv) noexcept
+{
+  argVector av;
+  for (int i = 0; i < argc; i++) {
+    av.push_back(argv[i]);
+  }
+  return av;
+}
+
 inline void
-_App::handleCmd(int argc, char** argv) noexcept
+_App::handleCmd(_App::argVector av) noexcept
 {
 }
 
@@ -108,9 +122,9 @@ _App::renderScene() noexcept
 }
 
 int
-_App::run(int argc, char** argv) noexcept
+_App::run(int& argc, char** argv) noexcept
 {
-  handleCmd(argc, argv);
+  handleCmd(getOptions(argc, argv));
   initSDL();
   initWindow(m_dimensions);
   while (m_windowShouldOpen) {
@@ -121,7 +135,5 @@ _App::run(int argc, char** argv) noexcept
   }
   return 0;
 }
-
-_App App;
 
 } // namespace pl

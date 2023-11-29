@@ -1,5 +1,5 @@
-#ifndef MEZO_HPP_
-#define MEZO_HPP_
+#ifndef MAINCHAR_HPP_
+#define MAINCHAR_HPP_ 69
 
 #include "Entity.h"
 #include <SDL3/SDL.h>
@@ -19,4 +19,4 @@ public:
   static MainChar getSingleton() noexcept;
 };
 } // namespace pl
-#endif
+#endif // MAINCHAR_HPP_

@@ -1,3 +1,6 @@
+#ifndef ENTITY_HPP_
+#define ENTITY_HPP_ 69
+
 #include <SDL3/SDL.h>
 
 namespace pl {
@@ -15,3 +18,4 @@ private:
 };
 
 } // namespace pl
+#endif // ENTITY_HPP_
