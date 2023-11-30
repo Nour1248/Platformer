@@ -8,19 +8,20 @@ namespace pl {
 _App App;
 
 _App::_App() noexcept
-  : m_windowShouldOpen(true)
-  , m_icon(IMG_Load("../assets/Icon.png"))
+  : m_name{ "Platformer" }
+  , m_icon{ IMG_Load("../assets/Icon.png") }
+  , m_windowShouldOpen{ true }
 {
   SDL_SetHint(SDL_HINT_APP_NAME, m_name.c_str());
 }
 
 _App::~_App() noexcept
 {
-  SDL_Quit();
-  IMG_Quit();
   SDL_DestroyRenderer(m_renderer);
   SDL_DestroySurface(m_icon);
   SDL_DestroyWindow(m_window);
+  IMG_Quit();
+  SDL_Quit();
 }
 
 inline void
@@ -52,7 +53,7 @@ _App::initWindow(pair<int, int> dimensions) noexcept
 
   return;
 ERROR:
-  LOG(SDL_GetError());
+  print(SDL_GetError());
   exit(1);
 }
 
@@ -62,7 +63,7 @@ _App::pollEvents() noexcept
   SDL_PollEvent(&m_event);
 }
 
-const SDL_Event
+SDL_Event&
 _App::getmEvent() noexcept
 {
   return m_event;
@@ -94,19 +95,20 @@ _App::handleEvents() noexcept
   }
 }
 
-_App::argVector
-_App::getOptions(int argc, char** argv) noexcept
-{
-  argVector av;
+void
+_App::getOptions(int& argc, char** argv) noexcept
+{ // not the best but it does the job
   for (int i = 0; i < argc; i++) {
-    av.push_back(argv[i]);
+    if (argc < 5) {
+      print("FEW ARGS BE GENEROUS");
+    } else {
+      if (string("-w").compare(argv[i]) == 0) {
+        m_dimensions.first = std::stoi(string(argv[++i]));
+      } else if (string("-h").compare(argv[i]) == 0) {
+        m_dimensions.second = std::stoi(string(argv[++i]));
+      }
+    }
   }
-  return av;
-}
-
-inline void
-_App::handleCmd(_App::argVector av) noexcept
-{
 }
 
 inline void
@@ -124,7 +126,7 @@ _App::renderScene() noexcept
 int
 _App::run(int& argc, char** argv) noexcept
 {
-  handleCmd(getOptions(argc, argv));
+  getOptions(argc, argv);
   initSDL();
   initWindow(m_dimensions);
   while (m_windowShouldOpen) {
@@ -136,4 +138,4 @@ _App::run(int& argc, char** argv) noexcept
   return 0;
 }
 
-} // namespace pl
+} // pl

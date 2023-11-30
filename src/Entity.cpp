@@ -9,4 +9,4 @@ Entity::Entity(const char* path)
 {
 }
 
-} // namespace pl
+} // pl

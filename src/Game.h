@@ -16,11 +16,9 @@ public:
 
   SDL_Renderer* getmRenderer() noexcept;
   SDL_Window* getmWindow() noexcept;
-  const SDL_Event getmEvent() noexcept;
+  SDL_Event& getmEvent() noexcept;
 
-  using argVector = vector<string>;
-  argVector getOptions(int argc, char** argv) noexcept;
-  void handleCmd(argVector av) noexcept;
+  void getOptions(int& argc, char** argv) noexcept;
 
   inline void initSDL() noexcept;
   inline void initWindow(pair<int, int> dimensions) noexcept;
@@ -32,19 +30,17 @@ public:
   int run(int& argc, char** argv) noexcept;
 
 private:
+  string m_name;
+  SDL_Surface* m_icon;
   SDL_Window* m_window;
   SDL_Renderer* m_renderer;
-  SDL_Surface* m_icon;
   SDL_Event m_event;
-  SDL_Point m_mousePosition;
-  string m_name;
-  pair<int, int> m_dimensions;
-  vector<pair<string, SDL_Rect>> m_textures;
   bool m_windowShouldOpen;
+  pair<int, int> m_mousePosition;
+  pair<int, int> m_dimensions;
 };
-
 extern _App App;
 
-} // namespace pl
+} // pl
 
 #endif // APP_HPP_

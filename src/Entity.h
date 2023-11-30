@@ -11,11 +11,11 @@ public:
   Entity(const char* path);
   ~Entity();
 
-  void handleEvents() noexcept;
+  virtual void handleEvents() noexcept;
 
 private:
-  SDL_Texture* m_texture;
+  mutable SDL_Texture* m_texture;
 };
 
-} // namespace pl
+} // pl
 #endif // ENTITY_HPP_

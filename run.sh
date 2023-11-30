@@ -1,1 +1,1 @@
-cd  build/ && make -j8 && ./Game -w 600 -h 600 xdryx
+cd  build/ && make -j8 && ./Game -w 600 -h 600

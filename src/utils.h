@@ -4,20 +4,27 @@
 #include <format>
 #include <iostream>
 #include <string>
+#include <string_view>
 #include <tuple>
 #include <utility>
 #include <vector>
 
-#define LOG(X) cout << X << endl
-#define LOGandEXIT(X)                                                          \
-  cerr << X << endl;                                                           \
-  exit(1)
-
 namespace pl {
 inline namespace ut {
-using std::cout, std::cerr, std::endl, std::pair, std::vector, std::tuple,
-  std::string, std::format;
+
+using std::cout, std::endl, std::pair, std::vector, std::tuple, std::string,
+  std::vformat, std::string_view, std::make_format_args;
+
+// begin copy cat
+template<typename... A>
+auto
+print(const string_view fmt, A&&... args)
+{
+  cout << vformat(fmt, make_format_args(args...)).c_str() << endl;
 }
-} // namespace pl
+// end copy cat
+
+} // ut
+} // pl
 
 #endif // UTILS_HPP_

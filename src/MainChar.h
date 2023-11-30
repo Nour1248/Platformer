@@ -6,17 +6,19 @@
 #include <SDL3/SDL_image.h>
 
 namespace pl {
-class MainChar final : virtual public Entity
+
+class _MainChar final : virtual public Entity
 {
-private:
-  MainChar() noexcept;
-
 public:
-  MainChar(MainChar const&) = delete;
-  MainChar& operator=(MainChar const&) = delete;
-  ~MainChar() noexcept;
+  _MainChar() noexcept;
+  _MainChar(_MainChar const&) = delete;
+  _MainChar& operator=(_MainChar const&) = delete;
+  ~_MainChar() noexcept;
 
-  static MainChar getSingleton() noexcept;
+  void handleEvents() noexcept override;
 };
-} // namespace pl
+
+extern _MainChar MainChar;
+
+} // pl
 #endif // MAINCHAR_HPP_

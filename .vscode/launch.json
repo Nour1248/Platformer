@@ -9,7 +9,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/build/Game",
-            "args": ["-w 600" ,"-h 600"],
+            "args": ["-w" ,"600" ,"-h" ,"600"],
             "stopAtEntry": false,
             "cwd": "${fileDirname}",
             "environment": [],
