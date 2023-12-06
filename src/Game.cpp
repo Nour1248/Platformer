@@ -2,6 +2,8 @@
 #include "utils.h"
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_image.h>
+#include <cassert>
+#include <string>
 
 namespace pl {
 
@@ -95,9 +97,9 @@ _App::handleEvents() noexcept
   }
 }
 
-void
+const void
 _App::getOptions(int& argc, char** argv) noexcept
-{ // not the best but it does the job
+{ // not the best impl but it does the job
   for (int i = 0; i < argc; i++) {
     if (argc < 5) {
       print("FEW ARGS BE GENEROUS");
@@ -109,6 +111,35 @@ _App::getOptions(int& argc, char** argv) noexcept
       }
     }
   }
+}
+
+_NO_DISCARD
+const float
+_App::loadTextures(string path) noexcept
+{
+  float textureCount{ 0 };
+  float loadedTexturesCount{ 0 };
+  pair<string, SDL_Texture*> node;
+
+  for (const directory_entry& dirEntry : recursive_directory_iterator(path)) {
+    if (dirEntry.is_regular_file() &&
+        !(dirEntry.path().filename().string().compare("Icon.png") == 0)) {
+      textureCount++;
+      node.first = dirEntry.path().filename().string();
+      node.second =
+        IMG_LoadTexture(m_renderer, dirEntry.path().relative_path().c_str());
+
+      m_textures.insert(node);
+      print("loading texture : {}", node.first);
+
+      if (node.second != NULL)
+        loadedTexturesCount++;
+      else
+        print("Couldn't load texture : {}", node.first);
+    }
+  }
+
+  return (loadedTexturesCount / textureCount);
 }
 
 inline void
@@ -129,6 +160,7 @@ _App::run(int& argc, char** argv) noexcept
   getOptions(argc, argv);
   initSDL();
   initWindow(m_dimensions);
+  assert(loadTextures("../assets/") == 1.0f);
   while (m_windowShouldOpen) {
     this->clearWindow();
     this->pollEvents();

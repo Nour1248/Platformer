@@ -3,8 +3,11 @@
 
 namespace pl {
 
-_MainChar::_MainChar() noexcept : Entity("../assets/Idle_KG_1.png") {
-
+_MainChar::_MainChar() noexcept
+  : Entity("../assets/Idle_KG_1.png")
+{
 }
+
+_MainChar MainChar;
 
 } // pl
