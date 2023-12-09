@@ -8,6 +8,7 @@
 #include <format>
 #include <iostream>
 #include <mutex>
+#include <stdexcept>
 #include <string>
 #include <string_view>
 #include <thread>
@@ -16,8 +17,6 @@
 #include <utility>
 #include <vector>
 
-#define _NO_DISCARD [[nodiscard]]
-
 namespace pl {
 inline namespace ut {
 
@@ -25,7 +24,7 @@ using std::cout, std::endl, std::unordered_map, std::pair, std::vector,
   std::tuple, std::thread, std::mutex, std::lock_guard, std::string,
   std::vformat, std::string_view, std::make_format_args,
   std::filesystem::recursive_directory_iterator,
-  std::filesystem::directory_entry, std::atomic;
+  std::filesystem::directory_entry, std::atomic, std::out_of_range;
 
 // begin copy cat
 // until c++23 print is implemented in libstdc++

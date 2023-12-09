@@ -14,12 +14,11 @@ public:
   _App& operator=(_App const&) = delete;
   ~_App() noexcept;
 
-  SDL_Renderer* getmRenderer() noexcept;
-  SDL_Window* getmWindow() noexcept;
-  SDL_Event& getmEvent() noexcept;
+  SDL_Renderer* getRenderer() noexcept;
+  SDL_Window* getWindow() noexcept;
+  SDL_Event& getEvent() noexcept;
 
   const void getOptions(int& argc, char** argv) noexcept;
-  _NO_DISCARD const float loadTextures(string path) noexcept;
 
   inline void initSDL() noexcept;
   inline void initWindow(pair<int, int> dimensions) noexcept;
@@ -37,7 +36,6 @@ private:
   SDL_Renderer* m_renderer;
   SDL_Event m_event;
   bool m_windowShouldOpen;
-  unordered_map<string, SDL_Texture*> m_textures;
   pair<int, int> m_mousePosition;
   pair<int, int> m_dimensions;
 };

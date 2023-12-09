@@ -1,9 +1,12 @@
 #include "Game.h"
+#include "MainChar.h"
+#include "SDL3/SDL_render.h"
+#include "Texture.h"
 #include "utils.h"
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_image.h>
-#include <cassert>
-#include <string>
+#include <bits/getopt_core.h>
+#include <unistd.h>
 
 namespace pl {
 
@@ -26,19 +29,6 @@ _App::~_App() noexcept
   SDL_Quit();
 }
 
-inline void
-_App::initSDL() noexcept
-{
-  if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_EVENTS) != 0 ||
-      IMG_Init(IMG_INIT_PNG) != IMG_INIT_PNG) {
-    goto ERROR;
-  }
-  return;
-ERROR:
-  cout << SDL_GetError() << endl;
-  exit(1);
-}
-
 void
 _App::initWindow(pair<int, int> dimensions) noexcept
 {
@@ -59,28 +49,54 @@ ERROR:
   exit(1);
 }
 
-inline void
-_App::pollEvents() noexcept
-{
-  SDL_PollEvent(&m_event);
-}
-
 SDL_Event&
-_App::getmEvent() noexcept
+_App::getEvent() noexcept
 {
   return m_event;
 }
 
 SDL_Window*
-_App::getmWindow() noexcept
+_App::getWindow() noexcept
 {
   return m_window;
 }
 
 SDL_Renderer*
-_App::getmRenderer() noexcept
+_App::getRenderer() noexcept
 {
   return m_renderer;
+}
+
+const void
+_App::getOptions(int& argc, char** argv) noexcept
+{
+  int opt;
+  while ((opt = getopt(argc, argv, "w:h:")) != -1) {
+    switch (opt) {
+      case 'w':
+        m_dimensions.first = std::stoi(optarg);
+        break;
+      case 'h':
+        m_dimensions.second = std::stoi(optarg);
+        break;
+      default:
+        print("USAGE : Game -w {Width} -h {Height}");
+        exit(EXIT_FAILURE);
+    }
+  }
+}
+
+inline void
+_App::initSDL() noexcept
+{
+  if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_EVENTS) != 0 ||
+      IMG_Init(IMG_INIT_PNG) != IMG_INIT_PNG) {
+    goto ERROR;
+  }
+  return;
+ERROR:
+  cout << SDL_GetError() << endl;
+  exit(1);
 }
 
 inline void
@@ -97,49 +113,10 @@ _App::handleEvents() noexcept
   }
 }
 
-const void
-_App::getOptions(int& argc, char** argv) noexcept
-{ // not the best impl but it does the job
-  for (int i = 0; i < argc; i++) {
-    if (argc < 5) {
-      print("FEW ARGS BE GENEROUS");
-    } else {
-      if (string("-w").compare(argv[i]) == 0) {
-        m_dimensions.first = std::stoi(string(argv[++i]));
-      } else if (string("-h").compare(argv[i]) == 0) {
-        m_dimensions.second = std::stoi(string(argv[++i]));
-      }
-    }
-  }
-}
-
-_NO_DISCARD
-const float
-_App::loadTextures(string path) noexcept
+inline void
+_App::pollEvents() noexcept
 {
-  float textureCount{ 0 };
-  float loadedTexturesCount{ 0 };
-  pair<string, SDL_Texture*> node;
-
-  for (const directory_entry& dirEntry : recursive_directory_iterator(path)) {
-    if (dirEntry.is_regular_file() &&
-        !(dirEntry.path().filename().string().compare("Icon.png") == 0)) {
-      textureCount++;
-      node.first = dirEntry.path().filename().string();
-      node.second =
-        IMG_LoadTexture(m_renderer, dirEntry.path().relative_path().c_str());
-
-      m_textures.insert(node);
-      print("loading texture : {}", node.first);
-
-      if (node.second != NULL)
-        loadedTexturesCount++;
-      else
-        print("Couldn't load texture : {}", node.first);
-    }
-  }
-
-  return (loadedTexturesCount / textureCount);
+  SDL_PollEvent(&m_event);
 }
 
 inline void
@@ -160,10 +137,11 @@ _App::run(int& argc, char** argv) noexcept
   getOptions(argc, argv);
   initSDL();
   initWindow(m_dimensions);
-  assert(loadTextures("../assets/") == 1.0f);
+  Texture::loadTextures("../assets/");
   while (m_windowShouldOpen) {
     this->clearWindow();
     this->pollEvents();
+    MainChar.blitClippedTexture(1);
     this->handleEvents();
     this->renderScene();
   }

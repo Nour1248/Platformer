@@ -1,13 +1,13 @@
 #include "MainChar.h"
-#include "Entity.h"
+#include "Texture.h"
 
 namespace pl {
 
-_MainChar::_MainChar() noexcept
-  : Entity("../assets/Idle_KG_1.png")
+_MainChar MainChar;
+
+_MainChar::_MainChar()
+  : Texture{ "Idle_1" }
 {
 }
-
-_MainChar MainChar;
 
 } // pl

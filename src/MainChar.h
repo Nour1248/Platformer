@@ -1,20 +1,19 @@
 #ifndef MAINCHAR_HPP_
 #define MAINCHAR_HPP_ 69
 
-#include "Entity.h"
+#include "Texture.h"
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_image.h>
 
-
 namespace pl {
 
-class _MainChar final : virtual public Entity
+class _MainChar final : virtual public Texture
 {
 public:
-  _MainChar() noexcept;
+  _MainChar();
   _MainChar(_MainChar const&) = delete;
   _MainChar& operator=(_MainChar const&) = delete;
-  ~_MainChar() noexcept;
+  ~_MainChar() noexcept = default;
 
   // void handleEvents() noexcept override;
 };
