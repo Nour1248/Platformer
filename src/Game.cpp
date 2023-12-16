@@ -1,16 +1,17 @@
-#include "Game.h"
-#include "MainChar.h"
-#include "SDL3/SDL_render.h"
-#include "Texture.h"
-#include "utils.h"
+#include "Game.hpp"
+#include "Animation.hpp"
+#include "MainChar.hpp"
+#include "Texture.hpp"
+#include "stl.hpp"
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_image.h>
-#include <bits/getopt_core.h>
+#include <cstdio>
 #include <unistd.h>
 
 namespace pl {
 
 _App App;
+_MainChar* MainCharPtr;
 
 _App::_App() noexcept
   : m_name{ "Platformer" }
@@ -45,7 +46,7 @@ _App::initWindow(pair<int, int> dimensions) noexcept
 
   return;
 ERROR:
-  print(SDL_GetError());
+  print(stderr, "Error initializing the window : {} \n", SDL_GetError());
   exit(1);
 }
 
@@ -80,7 +81,7 @@ _App::getOptions(int& argc, char** argv) noexcept
         m_dimensions.second = std::stoi(optarg);
         break;
       default:
-        print("USAGE : Game -w {Width} -h {Height}");
+        print(stdout, "USAGE : Game -w {Width} -h {Height} \n");
         exit(EXIT_FAILURE);
     }
   }
@@ -95,7 +96,7 @@ _App::initSDL() noexcept
   }
   return;
 ERROR:
-  cout << SDL_GetError() << endl;
+  print(stderr, "Couldnt init SDL : {} \n", SDL_GetError());
   exit(1);
 }
 
@@ -105,8 +106,6 @@ _App::handleEvents() noexcept
   switch (m_event.type) {
     case SDL_EVENT_QUIT:
       m_windowShouldOpen = false;
-      break;
-    case SDL_EVENT_MOUSE_BUTTON_UP:
       break;
     default:
       break;
@@ -131,17 +130,32 @@ _App::renderScene() noexcept
   SDL_RenderPresent(m_renderer);
 }
 
+inline void
+_App::getTicks() noexcept
+{
+  m_timer = SDL_GetTicks();
+}
+
 int
 _App::run(int& argc, char** argv) noexcept
 {
   getOptions(argc, argv);
+
   initSDL();
   initWindow(m_dimensions);
+
   Texture::loadTextures("../assets/");
+
+  _MainChar MainChar{ "char_blue", { 100, 100, 100, 100 }, 0.875 };
+  MainCharPtr = &MainChar;
+  MainChar.registerAnimation();
+
   while (m_windowShouldOpen) {
+    this->getTicks();
     this->clearWindow();
     this->pollEvents();
-    MainChar.blitClippedTexture(1);
+    MainChar.handleEvents();
+    Animation::playAnimations();
     this->handleEvents();
     this->renderScene();
   }
