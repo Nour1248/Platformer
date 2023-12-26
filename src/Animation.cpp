@@ -1,11 +1,13 @@
 #include "Animation.hpp"
-#include "Game.hpp"
+#include "Texture.hpp"
 
 namespace pl {
 
-Animation::Animation(float interval)
+Animation::Animation(string name, float interval, int duration)
   : m_interval{ interval }
+  , Texture(name)
 {
+  Animations.push_back(this);
 }
 
 float
@@ -23,13 +25,8 @@ Animation::setInterval(float interval) noexcept
 void
 Animation::playAnimations() noexcept
 {
-  for (const auto& a : Animations) {
-    switch (a.classID) {
-      case _MainChar_:
-        MainCharPtr->animate();
-        break;
-    }
-  }
+  for (auto& a : Animations)
+    a->animate();
 }
 
 }

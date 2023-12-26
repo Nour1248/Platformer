@@ -1,24 +1,57 @@
-#include "SDL3/SDL_rect.h"
 #ifndef MAINCHAR_HPP_
 #define MAINCHAR_HPP_ 69
 
 #include "Animation.hpp"
-#include "Rect.hpp"
-#include "Texture.hpp"
+#include "Eventable.hpp"
 #include "stl.hpp"
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_image.h>
 
 #define MainCharSpriteCount 48
+#define MainCharEventCount 6
 
 namespace pl {
 
-// after a big fight with the compiler i couldnt do anything else , auctully i
-// can but i wont
-static consteval array<Rect<int>, MainCharSpriteCount>
-initSrcRects() noexcept
+class _MainChar final
+  : public Animation
+  , public Event
 {
-  array<Rect<int>, MainCharSpriteCount> _ = { {
+public:
+  _MainChar(string Texturename, float animationInterval, int speed) noexcept;
+  _MainChar(_MainChar const&) = delete;
+  _MainChar& operator=(_MainChar const&) = delete;
+  ~_MainChar() noexcept = default;
+
+  [[nodiscard]] int getSpeed() const noexcept;
+
+  void setSpeed(int s) noexcept;
+
+  static void keyDownCallback() noexcept;
+  static void keyUpCallback() noexcept;
+  static void handleEvents() noexcept;
+
+  FORCE_INLINE_ bool isIdle() const noexcept;
+  FORCE_INLINE_ void blit() const noexcept;
+  void animate() noexcept;
+
+  // order matters
+  struct
+  {
+    bool IDLE = false;
+    bool ATTACK = false;
+    bool WALK = false;
+    bool JUMP = false;
+    bool LAND = false;
+    bool DIE = false;
+  };
+  enum Direction
+  {
+    LEFT,
+    RIGHT
+  };
+
+public:
+  static constinit inline array<SDL_FRect, MainCharSpriteCount> SrcRects = { {
     { 18, 24, 22, 32 },   { 74, 24, 22, 32 },   { 130, 24, 22, 32 },
     { 186, 25, 22, 31 },  { 242, 25, 22, 31 },  { 298, 25, 22, 31 },
     { 11, 80, 28, 32 },   { 64, 78, 28, 34 },   { 123, 80, 29, 32 },
@@ -36,59 +69,22 @@ initSrcRects() noexcept
     { 344, 308, 36, 28 }, { 394, 321, 43, 15 }, { 2, 380, 44, 12 },
     { 58, 378, 45, 14 },  { 114, 379, 45, 13 }, { 170, 381, 45, 11 },
   } };
-  return _;
-}
 
-enum MainCharEvent
-{
-  IDLE,
-  ATTACK,
-  WALK,
-  JUMP,
-  LAND,
-  DIE,
-  EVENTCOUNT
-};
-
-using BeginIdx = int;
-using EndIdx = int;
-static consteval array<pair<BeginIdx, EndIdx>, EVENTCOUNT>
-initSrcRectsEventRange() noexcept
-{
-  array<pair<BeginIdx, EndIdx>, EVENTCOUNT> _ = {
-    { { 0, 5 }, { 6, 11 }, { 12, 19 }, { 20, 27 }, { 28, 35 }, { 36, 47 } }
-  };
-  return _;
-}
-
-class _MainChar final
-  : public Texture
-  , public Animation
-{
-public:
-  _MainChar(string Texturename, SDL_FRect dstRect, float animationInterval);
-  _MainChar(_MainChar const&) = delete;
-  _MainChar& operator=(_MainChar const&) = delete;
-  ~_MainChar() noexcept = default;
-
-  [[nodiscard]] int getSpeed() noexcept;
-  void setSpeed(int s) noexcept;
-
-  void handleEvents() noexcept;
-  void animate() noexcept;
-  void registerAnimation() noexcept;
-
-public:
-  constinit inline static array<Rect<int>, MainCharSpriteCount> SrcRects =
-    initSrcRects();
-  constinit inline static array<pair<BeginIdx, EndIdx>, EVENTCOUNT>
-    SrcRectsEventRange = initSrcRectsEventRange();
+  using BeginIdx = int;
+  using EndIdx = int;
+  static constinit inline array<pair<BeginIdx, EndIdx>, MainCharEventCount>
+    SrcRectsEventRange = {
+      // order matters
+      { { 0, 5 }, { 6, 11 }, { 12, 19 }, { 20, 27 }, { 28, 35 }, { 36, 47 } }
+    };
 
 private:
-  MainCharEvent m_event;
   SDL_FRect m_srcRect;
-  int m_speed; // in pixels per frame
+  Direction m_direction = RIGHT;
+  int m_speed; // in pixels / frame
 };
+
+extern constinit _MainChar* MainCharPtr;
 
 } // pl
 #endif // MAINCHAR_HPP_

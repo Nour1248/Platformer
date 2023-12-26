@@ -1,5 +1,6 @@
 #include "Game.hpp"
 #include "Animation.hpp"
+#include "Eventable.hpp"
 #include "MainChar.hpp"
 #include "Texture.hpp"
 #include "stl.hpp"
@@ -11,7 +12,6 @@
 namespace pl {
 
 _App App;
-_MainChar* MainCharPtr;
 
 _App::_App() noexcept
   : m_name{ "Platformer" }
@@ -30,45 +30,31 @@ _App::~_App() noexcept
   SDL_Quit();
 }
 
-void
-_App::initWindow(pair<int, int> dimensions) noexcept
-{
-  SDL_CreateWindowAndRenderer(m_dimensions.first,
-                              m_dimensions.second,
-                              SDL_WINDOW_RESIZABLE,
-                              &m_window,
-                              &m_renderer);
-  if (!m_window || !m_renderer) {
-    goto ERROR;
-  }
-  SDL_SetWindowTitle(m_window, m_name.c_str());
-  SDL_SetWindowIcon(m_window, m_icon);
-
-  return;
-ERROR:
-  print(stderr, "Error initializing the window : {} \n", SDL_GetError());
-  exit(1);
-}
-
-SDL_Event&
-_App::getEvent() noexcept
-{
-  return m_event;
-}
-
 SDL_Window*
-_App::getWindow() noexcept
+_App::getWindow() const noexcept
 {
   return m_window;
 }
 
 SDL_Renderer*
-_App::getRenderer() noexcept
+_App::getRenderer() const noexcept
 {
   return m_renderer;
 }
 
-const void
+const atomic_uint64_t&
+_App::getTicks() const noexcept
+{
+  return m_timer;
+}
+
+void
+_App::setWindowState(bool shouldOpen) noexcept
+{
+  m_windowShouldOpen = shouldOpen;
+}
+
+void
 _App::getOptions(int& argc, char** argv) noexcept
 {
   int opt;
@@ -87,7 +73,7 @@ _App::getOptions(int& argc, char** argv) noexcept
   }
 }
 
-inline void
+void
 _App::initSDL() noexcept
 {
   if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_EVENTS) != 0 ||
@@ -100,40 +86,56 @@ ERROR:
   exit(1);
 }
 
-inline void
-_App::handleEvents() noexcept
+FORCE_INLINE_
+void
+_App::initWindow(pair<int, int> dimensions) noexcept
 {
-  switch (m_event.type) {
-    case SDL_EVENT_QUIT:
-      m_windowShouldOpen = false;
-      break;
-    default:
-      break;
+  m_window = SDL_CreateWindow(m_name.c_str(),
+                              m_dimensions.first,
+                              m_dimensions.second,
+                              SDL_WINDOW_RESIZABLE);
+
+  SDL_SetWindowIcon(m_window, m_icon);
+  if (!m_window) {
+    print(stderr, "Error initializing the window : {} \n", SDL_GetError());
+    exit(1);
   }
 }
 
-inline void
-_App::pollEvents() noexcept
+FORCE_INLINE_
+void
+_App::initRenderer(const char* apiName, bool vSync) noexcept
 {
-  SDL_PollEvent(&m_event);
+  m_renderer = SDL_CreateRenderer(m_window, apiName, SDL_RENDERER_ACCELERATED);
+  SDL_SetRenderVSync(m_renderer, vSync);
+  if (!m_renderer) {
+    print(stderr, "Error initializing the renderer : {} \n", SDL_GetError());
+    exit(1);
+  }
 }
 
-inline void
+FORCE_INLINE_ void
+_App::updateTicks() noexcept
+{
+  m_timer = SDL_GetTicks();
+}
+
+FORCE_INLINE_ void
 _App::clearWindow() noexcept
 {
   SDL_RenderClear(m_renderer);
 }
 
-inline void
+FORCE_INLINE_ void
 _App::renderScene() noexcept
 {
   SDL_RenderPresent(m_renderer);
 }
 
-inline void
-_App::getTicks() noexcept
+FORCE_INLINE_ void
+_App::delay(int ms) noexcept
 {
-  m_timer = SDL_GetTicks();
+  SDL_Delay(ms);
 }
 
 int
@@ -143,20 +145,21 @@ _App::run(int& argc, char** argv) noexcept
 
   initSDL();
   initWindow(m_dimensions);
+  initRenderer(nullptr, true);
 
   Texture::loadTextures("../assets/");
 
-  _MainChar MainChar{ "char_blue", { 100, 100, 100, 100 }, 0.875 };
+  _MainChar MainChar{ "char_blue", 100.0f, 5 };
+  MainChar.setCoordinates(300, 300);
+  MainChar.setDimensions(50, 50);
   MainCharPtr = &MainChar;
-  MainChar.registerAnimation();
 
   while (m_windowShouldOpen) {
-    this->getTicks();
+    this->updateTicks();
     this->clearWindow();
-    this->pollEvents();
-    MainChar.handleEvents();
+    Event::pollEvents();
+    Event::handleEvents();
     Animation::playAnimations();
-    this->handleEvents();
     this->renderScene();
   }
   return 0;

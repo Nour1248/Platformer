@@ -1,5 +1,6 @@
 #include "Texture.hpp"
 #include "Game.hpp"
+#include "SDL3/SDL_render.h"
 #include "stl.hpp"
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_image.h>
@@ -7,9 +8,8 @@
 
 namespace pl {
 
-Texture::Texture(string name, Rect<float> dstRect) noexcept
+Texture::Texture(string name) noexcept
   : m_textureName{ name }
-  , m_dstRect{ dstRect.toSDL_FRect() }
 {
 }
 
@@ -62,7 +62,7 @@ Texture::getDimensions() const noexcept
 }
 
 SDL_Texture*
-Texture::getTexturePtr(string name) const
+Texture::getTexturePtr(string name) const noexcept
 try {
   return Textures.at(name + ".png");
 } catch (out_of_range) {
@@ -78,10 +78,34 @@ Texture::blitTexture() const noexcept
 }
 
 void
+Texture::blitFlippedTexture() const noexcept
+{
+  SDL_RenderTextureRotated(App.getRenderer(),
+                           getTexturePtr(m_textureName),
+                           nullptr,
+                           &m_dstRect,
+                           0.0f,
+                           nullptr,
+                           SDL_FLIP_HORIZONTAL);
+}
+
+void
 Texture::blitClippedTexture(const SDL_FRect* srcRect) const noexcept
 {
   SDL_RenderTexture(
     App.getRenderer(), getTexturePtr(m_textureName), srcRect, &m_dstRect);
+}
+
+void
+Texture::blitFlippedAndClippedTexture(const SDL_FRect* srcRect) const noexcept
+{
+  SDL_RenderTextureRotated(App.getRenderer(),
+                           getTexturePtr(m_textureName),
+                           srcRect,
+                           &m_dstRect,
+                           0.0f,
+                           nullptr,
+                           SDL_FLIP_HORIZONTAL);
 }
 
 } // pl

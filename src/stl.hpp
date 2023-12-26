@@ -8,6 +8,7 @@
 #include <cstdio>
 #include <filesystem>
 #include <format>
+#include <functional>
 #include <list>
 #include <mutex>
 #include <stdexcept>
@@ -17,6 +18,13 @@
 #include <tuple>
 #include <unordered_map>
 #include <utility>
+#include <vector>
+
+#ifdef __GNUC__
+#define FORCE_INLINE_ __inline __attribute__((__always_inline__))
+#elif defined _MSC_VER
+#define FORCE_INLINE_ __forceinline
+#endif
 
 namespace pl {
 inline namespace ut {
@@ -26,7 +34,7 @@ using std::fprintf, std::FILE, std::unordered_map, std::array, std::pair,
   std::vformat, std::string_view, std::make_format_args,
   std::filesystem::recursive_directory_iterator,
   std::filesystem::directory_entry, std::out_of_range, std::atomic_uint64_t,
-  std::uint64_t;
+  std::uint64_t, std::function, std::vector;
 
 // until c++23 print is implemented in libstdc++
 template<typename... A>
