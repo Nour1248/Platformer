@@ -1,1 +1,1 @@
-cd  build/ && rm * -r && cmake .. && make -j8 && ./Game -w 600 -h 600
+cd  build/ && make -j8 && ./Platformer -w 600 -h 600

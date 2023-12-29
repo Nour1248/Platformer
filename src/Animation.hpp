@@ -3,7 +3,7 @@
 
 #include "Texture.hpp"
 #include "stl.hpp"
-#include <SDL3/SDL.h> 
+#include <SDL3/SDL.h>
 
 namespace pl {
 
@@ -21,7 +21,6 @@ public:
   static void playAnimations() noexcept;
 
 public:
-
   inline static vector<Animation*> Animations;
 
 protected:

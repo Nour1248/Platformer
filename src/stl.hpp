@@ -15,14 +15,13 @@
 #include <string>
 #include <string_view>
 #include <thread>
-#include <tuple>
 #include <unordered_map>
 #include <utility>
 #include <vector>
 
-#ifdef __GNUC__
+#if defined(__GNUC__)
 #define FORCE_INLINE_ __inline __attribute__((__always_inline__))
-#elif defined _MSC_VER
+#elif defined(_MSC_VER)
 #define FORCE_INLINE_ __forceinline
 #endif
 

@@ -1,10 +1,8 @@
 #include "Texture.hpp"
 #include "Game.hpp"
-#include "SDL3/SDL_render.h"
 #include "stl.hpp"
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_image.h>
-#include <cstdio>
 
 namespace pl {
 
@@ -20,7 +18,8 @@ Texture::loadTextures(string path) noexcept
 
   for (const directory_entry& dirEntry : recursive_directory_iterator(path)) {
     if (dirEntry.is_regular_file() &&
-        !(dirEntry.path().filename().string().compare("Icon.png") == 0)) {
+        !(dirEntry.path().filename().string().compare("Icon.png") == 0))
+      [[likely]] {
 
       dNode.first = dirEntry.path().filename().string();
       dNode.second = IMG_LoadTexture(App.getRenderer(),

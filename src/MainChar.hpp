@@ -22,7 +22,8 @@ public:
   _MainChar& operator=(_MainChar const&) = delete;
   ~_MainChar() noexcept = default;
 
-  [[nodiscard]] int getSpeed() const noexcept;
+  [[nodiscard]] const int getSpeed() const noexcept;
+  [[nodiscard]] FORCE_INLINE_ const int getRangeIdx() const noexcept;
 
   void setSpeed(int s) noexcept;
 
@@ -34,8 +35,7 @@ public:
   FORCE_INLINE_ void blit() const noexcept;
   void animate() noexcept;
 
-  // order matters
-  struct
+  struct M_Event
   {
     bool IDLE = false;
     bool ATTACK = false;
@@ -44,11 +44,18 @@ public:
     bool LAND = false;
     bool DIE = false;
   };
+
   enum Direction
   {
     LEFT,
     RIGHT
   };
+
+private:
+  SDL_FRect m_srcRect;
+  Direction m_direction = RIGHT;
+  M_Event m_event;
+  int m_speed; // in pixels / frame
 
 public:
   static constinit inline array<SDL_FRect, MainCharSpriteCount> SrcRects = { {
@@ -74,14 +81,9 @@ public:
   using EndIdx = int;
   static constinit inline array<pair<BeginIdx, EndIdx>, MainCharEventCount>
     SrcRectsEventRange = {
-      // order matters
+      // idle ,attack ,walk ,jump ,land ,die
       { { 0, 5 }, { 6, 11 }, { 12, 19 }, { 20, 27 }, { 28, 35 }, { 36, 47 } }
     };
-
-private:
-  SDL_FRect m_srcRect;
-  Direction m_direction = RIGHT;
-  int m_speed; // in pixels / frame
 };
 
 extern constinit _MainChar* MainCharPtr;

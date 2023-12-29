@@ -1,7 +1,6 @@
 #include "Eventable.hpp"
 #include "Game.hpp"
 #include "SDL3/SDL.h" // IWYU pragma: export
-#include "SDL3/SDL_events.h"
 #include "stl.hpp"
 
 namespace pl {
@@ -12,7 +11,7 @@ Event::Event(function<CallbackSigniture> keyDownCallback,
 {
   KeyDownCallbacks.push_back(keyDownCallback);
   KeyUpCallbacks.push_back(keyUpCallback);
-  HandleEventsCallbacks.push_back(handleEventsFunc);
+  HandleEventCallbacks.push_back(handleEventsFunc);
 }
 
 void
@@ -23,7 +22,7 @@ Event::pollEvents() noexcept
       case SDL_EVENT_QUIT:
         App.setWindowState(false);
         break;
-        
+
       case SDL_EVENT_KEY_DOWN:
         for (const auto& f : KeyDownCallbacks)
           f();
@@ -43,7 +42,7 @@ Event::pollEvents() noexcept
 void
 Event::handleEvents() noexcept
 {
-  for (const auto& f : HandleEventsCallbacks)
+  for (const auto& f : HandleEventCallbacks)
     f();
 }
 
