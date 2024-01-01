@@ -1,7 +1,8 @@
-#ifndef ENTITY_HPP_
-#define ENTITY_HPP_ 69
+#ifndef TEXTURE_HPP_
+#define TEXTURE_HPP_ 69
 
-#include "stl.hpp"
+#include "Game.hpp"
+#include "PCH.hpp"
 #include <SDL3/SDL.h>
 
 namespace pl {
@@ -9,30 +10,61 @@ namespace pl {
 class Texture
 {
 public:
-  Texture(string name) noexcept;
+  Texture(std::string name) noexcept;
   ~Texture() = default;
 
-  static const void loadTextures(string path) noexcept;
+  static const void loadTextures(std::string path) noexcept;
 
   const void setCoordinates(float x, float y) noexcept;
   const void setDimensions(float w, float h) noexcept;
-  [[nodiscard]] pair<float, float> getCoordinates() const noexcept;
-  [[nodiscard]] pair<float, float> getDimensions() const noexcept;
+  [[nodiscard]] std::pair<float, float> getCoordinates() const noexcept;
+  [[nodiscard]] std::pair<float, float> getDimensions() const noexcept;
 
-  SDL_Texture* getTexturePtr(string name) const noexcept;
-  void blitTexture() const noexcept;
-  void blitFlippedTexture() const noexcept;
-  void blitClippedTexture(const SDL_FRect* srcRect) const noexcept;
-  void blitFlippedAndClippedTexture(const SDL_FRect* srcRect) const noexcept;
+  SDL_Texture* getTexturePtr(std::string name) const noexcept;
+
+  FORCE_INLINE_ void blitTexture() const noexcept
+  {
+    SDL_RenderTexture(
+      App.getRenderer(), getTexturePtr(m_textureName), nullptr, &m_dstRect);
+  }
+
+  FORCE_INLINE_ void blitFlippedTexture() const noexcept
+  {
+    SDL_RenderTextureRotated(App.getRenderer(),
+                             getTexturePtr(m_textureName),
+                             nullptr,
+                             &m_dstRect,
+                             0.0f,
+                             nullptr,
+                             SDL_FLIP_HORIZONTAL);
+  }
+
+  FORCE_INLINE_ void blitClippedTexture(const SDL_FRect* srcRect) const noexcept
+  {
+    SDL_RenderTexture(
+      App.getRenderer(), getTexturePtr(m_textureName), srcRect, &m_dstRect);
+  }
+
+  FORCE_INLINE_ void blitFlippedAndClippedTexture(
+    const SDL_FRect* srcRect) const noexcept
+  {
+    SDL_RenderTextureRotated(App.getRenderer(),
+                             getTexturePtr(m_textureName),
+                             srcRect,
+                             &m_dstRect,
+                             0.0f,
+                             nullptr,
+                             SDL_FLIP_HORIZONTAL);
+  }
 
 public:
-  inline static unordered_map<string, SDL_Texture*> Textures;
+  inline static std::unordered_map<std::string, SDL_Texture*> Textures;
 
 protected:
-  string m_textureName;
+  std::string m_textureName;
   SDL_FRect m_dstRect;
 };
 
 } // pl
 
-#endif // ENTITY_HPP_
+#endif // TEXTURE_HPP_

@@ -1,22 +1,23 @@
 #include "Texture.hpp"
 #include "Game.hpp"
-#include "stl.hpp"
+#include "PCH.hpp"
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_image.h>
 
 namespace pl {
 
-Texture::Texture(string name) noexcept
+Texture::Texture(std::string name) noexcept
   : m_textureName{ name }
 {
 }
 
 const void
-Texture::loadTextures(string path) noexcept
+Texture::loadTextures(std::string path) noexcept
 {
-  pair<string, SDL_Texture*> dNode;
+  std::pair<std::string, SDL_Texture*> dNode;
 
-  for (const directory_entry& dirEntry : recursive_directory_iterator(path)) {
+  for (const auto& dirEntry :
+       std::filesystem::recursive_directory_iterator(path)) {
     if (dirEntry.is_regular_file() &&
         !(dirEntry.path().filename().string().compare("Icon.png") == 0))
       [[likely]] {
@@ -26,10 +27,10 @@ Texture::loadTextures(string path) noexcept
                                      dirEntry.path().relative_path().c_str());
 
       Textures.insert(dNode);
-      print(stdout, "loaded texture : {}\n", dNode.first);
+      print("loaded texture : {}\n", dNode.first);
 
       if (dNode.second == nullptr)
-        print(stderr, "Couldn't load texture : {}\n", dNode.first);
+        print("Couldn't load texture : {}\n", dNode.first);
     }
   }
 }
@@ -48,63 +49,25 @@ Texture::setDimensions(float w, float h) noexcept
   m_dstRect.h = h;
 }
 
-pair<float, float>
+std::pair<float, float>
 Texture::getCoordinates() const noexcept
 {
   return { m_dstRect.x, m_dstRect.y };
 }
 
-pair<float, float>
+std::pair<float, float>
 Texture::getDimensions() const noexcept
 {
   return { m_dstRect.x, m_dstRect.y };
 }
 
 SDL_Texture*
-Texture::getTexturePtr(string name) const noexcept
+Texture::getTexturePtr(std::string name) const noexcept
 try {
   return Textures.at(name + ".png");
-} catch (out_of_range) {
-  print(stderr, "Wrong Name DumbAss : {} \n", name);
+} catch (...) {
+  print("Wrong Name DumbAss : {} \n", name);
   return nullptr;
 }
 
-void
-Texture::blitTexture() const noexcept
-{
-  SDL_RenderTexture(
-    App.getRenderer(), getTexturePtr(m_textureName), nullptr, &m_dstRect);
-}
-
-void
-Texture::blitFlippedTexture() const noexcept
-{
-  SDL_RenderTextureRotated(App.getRenderer(),
-                           getTexturePtr(m_textureName),
-                           nullptr,
-                           &m_dstRect,
-                           0.0f,
-                           nullptr,
-                           SDL_FLIP_HORIZONTAL);
-}
-
-void
-Texture::blitClippedTexture(const SDL_FRect* srcRect) const noexcept
-{
-  SDL_RenderTexture(
-    App.getRenderer(), getTexturePtr(m_textureName), srcRect, &m_dstRect);
-}
-
-void
-Texture::blitFlippedAndClippedTexture(const SDL_FRect* srcRect) const noexcept
-{
-  SDL_RenderTextureRotated(App.getRenderer(),
-                           getTexturePtr(m_textureName),
-                           srcRect,
-                           &m_dstRect,
-                           0.0f,
-                           nullptr,
-                           SDL_FLIP_HORIZONTAL);
-}
-
-} // pl
+} // namespace pl

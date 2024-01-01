@@ -1,12 +1,11 @@
 #include "Game.hpp"
 #include "Animation.hpp"
-#include "Eventable.hpp"
+#include "Event.hpp"
 #include "MainChar.hpp"
+#include "PCH.hpp"
 #include "Texture.hpp"
-#include "stl.hpp"
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_image.h>
-#include <cstdio>
 #include <unistd.h>
 
 namespace pl {
@@ -42,7 +41,7 @@ _App::getRenderer() const noexcept
   return m_renderer;
 }
 
-const atomic_uint64_t&
+const std::atomic_uint64_t&
 _App::getTicks() const noexcept
 {
   return m_timer;
@@ -67,7 +66,7 @@ _App::getOptions(int& argc, char** argv) noexcept
         m_dimensions.second = std::stoi(optarg);
         break;
       default:
-        print(stdout, "USAGE : Game -w {Width} -h {Height} \n");
+        print("USAGE : Game -w {Width} -h {Height} \n");
         exit(EXIT_FAILURE);
     }
   }
@@ -82,13 +81,12 @@ _App::initSDL() noexcept
   }
   return;
 ERROR:
-  print(stderr, "Couldnt init SDL : {} \n", SDL_GetError());
+  print("Couldnt init SDL : {} \n", SDL_GetError());
   exit(1);
 }
 
-FORCE_INLINE_
 void
-_App::initWindow(pair<int, int> dimensions) noexcept
+_App::initWindow(std::pair<int, int> dimensions) noexcept
 {
   m_window = SDL_CreateWindow(m_name.c_str(),
                               m_dimensions.first,
@@ -97,55 +95,30 @@ _App::initWindow(pair<int, int> dimensions) noexcept
 
   SDL_SetWindowIcon(m_window, m_icon);
   if (!m_window) {
-    print(stderr, "Error initializing the window : {} \n", SDL_GetError());
+    print("Error initializing the window : {} \n", SDL_GetError());
     exit(1);
   }
 }
 
-FORCE_INLINE_
 void
 _App::initRenderer(const char* apiName, bool vSync) noexcept
 {
   m_renderer = SDL_CreateRenderer(m_window, apiName, SDL_RENDERER_ACCELERATED);
   SDL_SetRenderVSync(m_renderer, vSync);
   if (!m_renderer) {
-    print(stderr, "Error initializing the renderer : {} \n", SDL_GetError());
+    print("Error initializing the renderer : {} \n", SDL_GetError());
     exit(1);
   }
-}
-
-FORCE_INLINE_ void
-_App::updateTicks() noexcept
-{
-  m_timer = SDL_GetTicks();
-}
-
-FORCE_INLINE_ void
-_App::clearWindow() noexcept
-{
-  SDL_RenderClear(m_renderer);
-}
-
-FORCE_INLINE_ void
-_App::renderScene() noexcept
-{
-  SDL_RenderPresent(m_renderer);
-}
-
-FORCE_INLINE_ void
-_App::delay(int ms) noexcept
-{
-  SDL_Delay(ms);
 }
 
 int
 _App::run(int& argc, char** argv) noexcept
 {
-  getOptions(argc, argv);
+  this->getOptions(argc, argv);
 
-  initSDL();
-  initWindow(m_dimensions);
-  initRenderer(nullptr, true);
+  this->initSDL();
+  this->initWindow(m_dimensions);
+  this->initRenderer(nullptr, true);
 
   Texture::loadTextures("../assets/");
 

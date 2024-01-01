@@ -1,6 +1,6 @@
 #include "MainChar.hpp"
 #include "Animation.hpp"
-#include "Eventable.hpp"
+#include "Event.hpp"
 #include "Game.hpp"
 #include <SDL3/SDL.h>
 
@@ -8,7 +8,7 @@ namespace pl {
 
 constinit _MainChar* MainCharPtr{ nullptr };
 
-_MainChar::_MainChar(string Texturename,
+_MainChar::_MainChar(std::string Texturename,
                      float animationInterval,
                      int speed) noexcept
   : Animation{ Texturename, animationInterval, -1 }
@@ -17,27 +17,27 @@ _MainChar::_MainChar(string Texturename,
 {
 }
 
-[[nodiscard]] const int
+const int
 _MainChar::getSpeed() const noexcept
 {
   return m_speed;
 }
 
-[[nodiscard]] FORCE_INLINE_ const int
+const int
 _MainChar::getRangeIdx() const noexcept
 {
-  if (isIdle())
-    return 0;
-  if (m_event.ATTACK)
-    return 1;
-  if (m_event.WALK)
-    return 2;
-  if (m_event.JUMP)
-    return 3;
-  if (m_event.LAND)
-    return 4;
   if (m_event.DIE)
-    return 5;
+    return DieIdx;
+  if (m_event.LAND)
+    return LandIdx;
+  if (m_event.JUMP)
+    return JumpIdx;
+  if (m_event.ATTACK)
+    return AttackIdx;
+  if (m_event.WALK)
+    return WalkIdx;
+  if (isIdle())
+    return IdleIdx;
 
   return -69;
 }
@@ -60,6 +60,12 @@ _MainChar::keyDownCallback() noexcept
       MainCharPtr->m_event.WALK = true;
       MainCharPtr->m_direction = RIGHT;
       break;
+    case SDL_SCANCODE_SPACE:
+      MainCharPtr->m_event.JUMP = true;
+      break;
+    case SDL_SCANCODE_LSHIFT:
+      MainCharPtr->m_event.ATTACK = true;
+      break;
     default:
       break;
   }
@@ -76,6 +82,12 @@ _MainChar::keyUpCallback() noexcept
     case SDL_SCANCODE_RIGHT:
       if (MainCharPtr->m_direction == RIGHT)
         MainCharPtr->m_event.WALK = false;
+      break;
+    case SDL_SCANCODE_SPACE:
+      MainCharPtr->m_event.JUMP = false;
+      break;
+    case SDL_SCANCODE_LSHIFT:
+      MainCharPtr->m_event.ATTACK = false;
       break;
     default:
       break;
@@ -102,18 +114,16 @@ _MainChar::handleEvents() noexcept
   }
 }
 
-FORCE_INLINE_
 bool
 _MainChar::isIdle() const noexcept
 {
   if (!this->m_event.WALK && !this->m_event.ATTACK && !this->m_event.JUMP &&
       !this->m_event.LAND && !this->m_event.DIE)
     return true;
-  else [[likely]]
+  else
     return false;
 }
 
-FORCE_INLINE_
 void
 _MainChar::blit() const noexcept
 {
@@ -130,7 +140,7 @@ _MainChar::blit() const noexcept
 void
 _MainChar::animate() noexcept
 {
-  static constinit pair<BeginIdx, EndIdx> range{ 0, 5 };
+  static constinit std::pair<BeginIdx, EndIdx> range{ 0, 5 };
   static constinit int idx{ 0 };
   static uint64_t lastFrameRegisteredTime = App.getTicks();
 

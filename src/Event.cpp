@@ -1,17 +1,20 @@
-#include "Eventable.hpp"
+#include "Event.hpp"
 #include "Game.hpp"
+#include "PCH.hpp"    // IWYU pragma: export
 #include "SDL3/SDL.h" // IWYU pragma: export
-#include "stl.hpp"
 
 namespace pl {
 
-Event::Event(function<CallbackSigniture> keyDownCallback,
-             function<CallbackSigniture> keyUpCallback,
-             function<CallbackSigniture> handleEventsFunc) noexcept
+Event::Event(std::function<CallbackSigniture> keyDownCallback,
+             std::function<CallbackSigniture> keyUpCallback,
+             std::function<CallbackSigniture> handleEventsFunc) noexcept
 {
-  KeyDownCallbacks.push_back(keyDownCallback);
-  KeyUpCallbacks.push_back(keyUpCallback);
-  HandleEventCallbacks.push_back(handleEventsFunc);
+  if (keyDownCallback != nullptr)
+    KeyDownCallbacks.push_back(keyDownCallback);
+  if (keyUpCallback != nullptr)
+    KeyUpCallbacks.push_back(keyUpCallback);
+  if (handleEventsFunc != nullptr)
+    HandleEventCallbacks.push_back(handleEventsFunc);
 }
 
 void

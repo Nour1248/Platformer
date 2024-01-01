@@ -1,8 +1,8 @@
 #ifndef ANIMATION_HPP_
 #define ANIMATION_HPP_ 69
 
+#include "PCH.hpp" // IWYU pragma: export
 #include "Texture.hpp"
-#include "stl.hpp"
 #include <SDL3/SDL.h>
 
 namespace pl {
@@ -10,7 +10,7 @@ namespace pl {
 class Animation : public Texture
 {
 public:
-  Animation(string name, float interval, int duration);
+  Animation(std::string name, float interval, int duration);
   ~Animation() = default;
 
   [[nodiscard]] float getInterval() const noexcept;
@@ -21,7 +21,7 @@ public:
   static void playAnimations() noexcept;
 
 public:
-  inline static vector<Animation*> Animations;
+  inline static std::vector<Animation*> Animations;
 
 protected:
   float m_interval;

@@ -3,9 +3,9 @@
 
 namespace pl {
 
-Animation::Animation(string name, float interval, int duration)
-  : m_interval{ interval }
-  , Texture(name)
+Animation::Animation(std::string name, float interval, int duration)
+  : Texture{ name }
+  , m_interval{ interval }
 {
   Animations.push_back(this);
 }
