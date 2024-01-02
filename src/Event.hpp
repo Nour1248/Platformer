@@ -1,7 +1,7 @@
 #ifndef EVENTABLE_Hpp_
 #define EVENTABLE_Hpp_
 
-#include "PCH.hpp" // IWYU pragma: export
+#include "PCH.hpp"
 #include <SDL3/SDL.h>
 
 namespace pl {

@@ -1,5 +1,5 @@
 #include "SAT.hpp"
-#include "PCH.hpp" // IWYU pragma: export
+#include "PCH.hpp"
 #include <algorithm>
 #include <cmath>
 #include <vector>

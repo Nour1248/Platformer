@@ -3,7 +3,7 @@
 
 #include "Animation.hpp"
 #include "Event.hpp"
-#include "PCH.hpp" // IWYU pragma: export
+#include "PCH.hpp"
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_image.h>
 

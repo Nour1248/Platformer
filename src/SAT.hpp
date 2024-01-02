@@ -1,7 +1,7 @@
 #ifndef SAT_HPP_
 #define SAT_HPP_
 
-#include "PCH.hpp" // IWYU pragma: export
+#include "PCH.hpp"
 
 namespace pl::math {
 

@@ -1,7 +1,7 @@
 #ifndef ANIMATION_HPP_
 #define ANIMATION_HPP_ 69
 
-#include "PCH.hpp" // IWYU pragma: export
+#include "PCH.hpp"
 #include "Texture.hpp"
 #include <SDL3/SDL.h>
 
