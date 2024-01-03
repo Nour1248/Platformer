@@ -4,6 +4,7 @@
 #include "MainChar.hpp"
 #include "PCH.hpp"
 #include "Texture.hpp"
+#include "global.h"
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_image.h>
 #include <unistd.h>

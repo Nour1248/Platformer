@@ -1,6 +1,7 @@
 #include "Texture.hpp"
 #include "Game.hpp"
 #include "PCH.hpp"
+#include "global.h"
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_image.h>
 

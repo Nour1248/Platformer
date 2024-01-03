@@ -5,14 +5,14 @@
 
 namespace gui {
 
-class GUI : public QApplication
+class GUIApp : public QApplication
 {
   Q_OBJECT
-  Q_DISABLE_COPY_MOVE(GUI)
+  Q_DISABLE_COPY_MOVE(GUIApp)
 public:
-  GUI(int& argc, char** argv);
+  GUIApp(int& argc, char** argv) noexcept;
 
-  int GUI_main() noexcept;
+  int GUI_main(QSettings s) noexcept;
 };
 
 }

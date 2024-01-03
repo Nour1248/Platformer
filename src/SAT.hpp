@@ -1,6 +1,7 @@
 #ifndef SAT_HPP_
 #define SAT_HPP_
 
+#include "global.h"
 #include "PCH.hpp"
 
 namespace pl::math {

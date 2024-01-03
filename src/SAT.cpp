@@ -1,8 +1,6 @@
 #include "SAT.hpp"
 #include "PCH.hpp"
-#include <algorithm>
-#include <cmath>
-#include <vector>
+
 
 namespace pl::math {
 

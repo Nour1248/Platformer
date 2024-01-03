@@ -2,6 +2,7 @@
 #define GAME_HPP_ 69
 
 #include "PCH.hpp"
+#include "global.h"
 #include <SDL3/SDL.h>
 
 namespace pl {
@@ -45,6 +46,7 @@ private:
   std::pair<int, int> m_mousePosition;
   std::pair<int, int> m_dimensions;
   std::atomic_uint64_t m_timer;
+  QSettings m_settings;
 };
 
 extern _App App;

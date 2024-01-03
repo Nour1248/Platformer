@@ -37,9 +37,6 @@ public:
   void blit() const noexcept;
   void animate() noexcept;
 
-  void jump() noexcept;
-  void attack() noexcept;
-
   struct M_Event
   {
     bool IDLE = false;

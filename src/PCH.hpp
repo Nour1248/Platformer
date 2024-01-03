@@ -1,8 +1,11 @@
-#ifndef STL_HPP_
-#define STL_HPP_ 69
+#ifndef PCH_HPP_
+#define PCH_HPP_ 69
 
+// std
+#include <algorithm>     // IWYU pragma: export
 #include <array>         // IWYU pragma: export
 #include <atomic>        // IWYU pragma: export
+#include <cmath>         // IWYU pragma: export
 #include <cstdint>       // IWYU pragma: export
 #include <filesystem>    // IWYU pragma: export
 #include <format>        // IWYU pragma: export
@@ -17,26 +20,7 @@
 #include <unordered_map> // IWYU pragma: export
 #include <utility>       // IWYU pragma: export
 #include <vector>        // IWYU pragma: export
+// QT6
+#include <QtCore> // IWYU pragma: export
 
-#if defined(__GNUC__)
-#define FORCE_INLINE_ __attribute__((always_inline)) inline
-#elif defined(_MSC_VER)
-#define FORCE_INLINE_ __forceinline
-#else
-#define FORCE_INLINE_ inline
-#endif
-
-namespace pl {
-inline namespace ut {
-
-template<typename... A>
-FORCE_INLINE_ void
-print(const std::string_view fmt, A&&... args)
-{
-  std::cout << vformat(fmt, std::make_format_args(args...)) << std::flush;
-}
-
-} // ut
-} // pl
-
-#endif // STL_HPP_
+#endif // PCH_HPP_
